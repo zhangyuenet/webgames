@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<!-- Copyright 2026 Yue Zhang. Licensed under the Apache License, Version 2.0. -->
+<!-- 渲染冒烟测试：直接跑一段中局并画出来。用浏览器打开本文件即可（无需服务器）。 -->
+<html lang="zh-CN">
+<head><meta charset="utf-8"><title>smoke</title>
+<style>body{margin:12px;background:#fbfaf4;font:13px monospace}canvas{border:1.5px solid #2a2a2a}</style>
+</head>
+<body>
+<canvas id="game"></canvas>
+<pre id="out"></pre>
+<script src="../js/config.js"></script>
+<script src="../js/levels.js"></script>
+<script src="../js/engine.js"></script>
+<script src="../js/render.js"></script>
+<script>
+(function () {
+  const out = document.getElementById('out');
+  const lines = [];
+  try {
+    const TD = globalThis.TD;
+    const game = new TD.Game(TD.getLevel(1));
+    const renderer = new TD.Renderer(document.getElementById('game'));
+    renderer.resize(game);
+    game.gold = 2000;
+    const placed = [
+      ['machinegun', 13, 4], ['cannon', 9, 8], ['twinCannon', 7, 4], ['rocket', 2, 8], ['missile', 10, 12],
+      ['mine', 8, 2], ['trap', 10, 6], ['wall', 6, 10], ['wall', 12, 10],
+    ];
+    for (const [k, c, r] of placed) { const res = game.place(k, c, r); if (!res.ok) lines.push('place ' + k + ' failed: ' + res.reason); }
+    game.upgrade(game.towers[0].id); game.upgrade(game.towers[0].id);
+    game.startWave();
+    // 跳到第 8 波，让所有敌人种类都出现
+    game.waveIndex = 6; game.spawnQueue = []; game.phase = 'countdown'; game.countdown = 0; game.startWave();
+    game.spawn('armoredCar', 0); game.spawn('tank', 0);
+    const dt = 1 / 60;
+    for (let i = 0; i < 60 * 22; i++) game.update(dt);
+    game.spawn('armoredCavalry', 0);
+    for (let i = 0; i < 60 * 1; i++) game.update(dt);
+    renderer.draw(game, { hover: { c: 6, r: 8 }, selectedKind: 'cannon', selectedTower: game.towers[1] });
+    lines.push('OK phase=' + game.phase + ' enemies=' + game.enemies.length + ' towers=' + game.towers.length + ' projectiles=' + game.projectiles.length + ' effects=' + game.effects.length + ' kills=' + game.kills + ' lives=' + game.lives + ' events=' + game.drainEvents().length);
+  } catch (e) {
+    lines.push('ERROR ' + (e.stack || e));
+  }
+  out.textContent = lines.join('\n');
+  document.title = lines[lines.length - 1].slice(0, 60);
+})();
+</script>
+</body>
+</html>

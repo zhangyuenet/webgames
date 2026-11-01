@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<!--
+  Copyright 2026 Yue Zhang
+  Licensed under the Apache License, Version 2.0. See LICENSE in the repository root.
+-->
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>塔防小游戏 · WebGames</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app">
+  <header>
+    <h1>塔防小游戏</h1>
+    <div class="hdr-right">
+      <label>关卡 <select id="levelSelect"></select></label>
+      <button id="btnHelp">规则</button>
+      <button id="btnExport" title="把记录保存为 JSON 文件">导出记录</button>
+      <button id="btnImport" title="从 JSON 文件恢复记录">导入记录</button>
+      <input type="file" id="fileImport" accept="application/json,.json" hidden>
+      <a class="link" href="../index.html">← 游戏列表</a>
+    </div>
+  </header>
+
+  <main>
+    <div id="board">
+      <canvas id="game" width="800" height="560"></canvas>
+      <div id="overlay" class="overlay hidden">
+        <div class="card">
+          <h2 id="ovTitle"></h2>
+          <p id="ovText"></p>
+          <div class="row" id="ovButtons"></div>
+        </div>
+      </div>
+    </div>
+
+    <aside id="panel">
+      <div class="stats">
+        <div><span class="lbl">关卡</span><b id="stLevel"></b></div>
+        <div><span class="lbl">金币</span><b id="stGold"></b></div>
+        <div><span class="lbl">生命</span><b id="stLives"></b></div>
+        <div><span class="lbl">波次</span><b id="stWave"></b></div>
+      </div>
+      <div class="controls">
+        <button id="btnWave" class="primary">开始第 1 波</button>
+        <button id="btnPause">暂停</button>
+        <button id="btnSpeed" title="游戏速度">×1</button>
+      </div>
+
+      <div class="section-title">建造 <span class="hint">快捷键 1–8，Esc 取消</span></div>
+      <div id="build" class="build"></div>
+      <div id="tip" class="tip">把鼠标移到武器上查看说明。选中后点击地图放置。</div>
+      <div id="selected" class="selected hidden"></div>
+
+      <div class="section-title">战报</div>
+      <div id="log" class="log"></div>
+
+      <div class="menu">
+        <button id="btnRestart">重玩本关</button>
+        <button id="btnReset" class="danger">清空记录</button>
+      </div>
+    </aside>
+  </main>
+
+  <div id="help" class="modal hidden">
+    <div class="modal-card">
+      <div class="modal-head"><h2>游戏规则</h2><button id="btnHelpClose">关闭</button></div>
+      <div id="helpBody"></div>
+    </div>
+  </div>
+
+  <footer>单机 · 无服务器 · 记录只保存在你的浏览器里 · Apache-2.0</footer>
+</div>
+
+<script src="js/config.js"></script>
+<script src="js/levels.js"></script>
+<script src="js/engine.js"></script>
+<script src="js/storage.js"></script>
+<script src="js/render.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
